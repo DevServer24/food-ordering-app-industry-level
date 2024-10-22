@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id          String    @id @db.Uuid
+  ordername   String?
+  orderid     Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  orderimage1 String?
+  orderimage2 String?
+  orderimage3 String?
+  orderimage4 String?
+  quantity    Int?
+  price       Decimal?
+  userId      String?   @db.Uuid
+  User        User?     @relation(fields: [userId], references: [id])
+  UserData    UserData? @relation(fields: [userDataId], references: [id])
+  userDataId  String?   @db.Uuid
+}
+
+model User {
+  id       String  @id @default(uuid()) @db.Uuid
+  username String? @unique
+
+  email     String?
+  password  String?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime?
+
+  Order      Order[]
+  UserData   UserData? @relation(fields: [userDataId], references: [id])
+  userDataId String?   @db.Uuid
+}
+
+model UserData {
+  id             String  @id @db.Uuid
+  firstname      String?
+  lastname       String?
+  secretquestion String?
+  image          String?
+  user           User[]
+  order          Order[]
+}
+
+model burgers {
+  user_id      String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String?     @db.VarChar(500)
+  price        Decimal?    @db.Decimal
+  description  String?     @db.VarChar(500)
+  image        String?     @db.VarChar(500)
+  cursorimage  String?     @db.VarChar(500)
+  categoriesId String?     @db.Uuid
+  categories   categories? @relation(fields: [categoriesId], references: [id])
+}
+
+model categories {
+  id      String    @id @db.Uuid
+  burgers burgers[]
+  drinks  drinks[]
+  fries   fries[]
+}
+
+model drinks {
+  user_id      String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String?     @db.VarChar(500)
+  price        Decimal?    @db.Decimal
+  description  String?     @db.VarChar(500)
+  image        String?     @db.VarChar(500)
+  cursorimage  String?     @db.VarChar(500)
+  categoriesId String?     @db.Uuid
+  categories   categories? @relation(fields: [categoriesId], references: [id])
+}
+
+model fries {
+  user_id      String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String?     @db.VarChar(500)
+  price        Decimal?    @db.Decimal
+  description  String?     @db.VarChar(500)
+  image        String?     @db.VarChar(500)
+  cursorimage  String?     @db.VarChar(500)
+  categoriesId String?     @db.Uuid
+  categories   categories? @relation(fields: [categoriesId], references: [id])
+}
+
+model heroItems {
+  user_id     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String?  @db.VarChar(500)
+  price       Decimal? @db.Decimal
+  description String?  @db.VarChar(500)
+  image       String?  @db.VarChar(500)
+  cursorimage String?  @db.VarChar(500)
+}
